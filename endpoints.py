@@ -1,0 +1,5 @@
+url_driver=    'https://external.preprod.alpha.fleetizen.com/api/v2/sync/driver/'
+url_vehicule=  'https://external.preprod.alpha.fleetizen.com/api/v2/sync/driver/vehicle/'
+url_company=   'https://external.preprod.alpha.fleetizen.com/api/v2/sync/company/'
+url_abonne=    'https://external.preprod.alpha.fleetizen.com/api/v2/sync/companycontract/'
+url_service=   'https://external.preprod.alpha.fleetizen.com/api/v2/sync/companyservice/'

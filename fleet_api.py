@@ -2,7 +2,7 @@ import requests
 import endpoints
 import authotoken
 
-def new_drivers_to_fleet(datas=None):
+def new_drivers_to_fleet(datas):
 
     hed = {'Authorization': 'Bearer ' + authotoken.token}
 
@@ -70,7 +70,7 @@ def delete_drivers_to_fleet(datas=None):
 
     #print(json_result)
 
-def new_vehicule_to_fleet(datas=None):
+def new_vehicule_to_fleet(datas):
 
     hed = {'Authorization': 'Bearer ' + authotoken.token}
 
@@ -95,11 +95,12 @@ def new_vehicule_to_fleet(datas=None):
         }
     response = requests.post(endpoints.url_driver, datas, headers=hed)
     
-    print(response.content)
+    #print(response.content)
     if  response.status_code==200:
-        print("Machallah: that's was a sucess", response.status_code) 
+        return "OK"
     else:
-        print("that's was not the case", response.status_code)
+        return "KO"
+    
 
 def new_familly_to_fleet(datas=None):
     

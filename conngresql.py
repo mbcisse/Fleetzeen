@@ -1,6 +1,6 @@
 from config import config
 import psycopg2
-import datetime
+from datetime import date
 
 def close_connect(conn, cur):
     
@@ -16,7 +16,7 @@ def close_connect(conn, cur):
             conn.close()
             print('Database connection closed.')
 
-def connect():
+def connection():
     conn = None
     try:
         params = config()
@@ -25,51 +25,95 @@ def connect():
         conn = psycopg2.connect(**params)
 		
         cur = conn.cursor()  
-
-        return (conn, cur)
-
+    
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+    
     finally:
         if conn is not None:
             conn.close()
             print('Database connection closed.')
+        
 
-    return (conn, cur)
+def update_datas(driver_id, tempstatus,  failure_message):
+    conn = None
+    try:
+        params = config()
 
+        #print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(      user="openpg",
+                                      password="openpgpwd",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="Fleetzeen")
+		
+        cur = conn.cursor()
+        sql_update_query = """Update fleetzeen_log set status = %s, failure_message  = %s where user_id = %s"""
+        
+        try:
+            cur.execute(sql_update_query, (str(tempstatus), str(failure_message), str(driver_id)))
+            conn.commit()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print("DJO IL YA ERROR: ", error)
 
-def update_datas(driver_id, tempstatus):
-    conn, cur= connect()
-    sql_update_query = """Update new_vehdri_to_fleet set status = %s where id = %s"""
-    cur.execute(sql_update_query, (tempstatus, driver_id))
-    conn.commit()
-    close_connect(conn, cur)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
     
+    finally:
+        if conn is not None:
+            conn.close()
+            #print('Database connection closed.')
 
 
-def inserting_datas(datas, datas1, tempstatus):
+def inserting_datas(datas, datas1, tempstatus, failure_message):
     
-    conn, cur= connect()
-    postgres_insert_query= """ INSERT INTO new_vehdri_to_fleet (driver_id, radio_code, driver_firstname, driver_lastname, 
-    email, mobile, city, ref,name, plaque, brand, model, color, co2, status, input_date) 
-    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-   
-    record_to_insert = """(datas.get('id'), datas.get('radio_code'),datas.get('driver_lastname'), datas.get('driver_firstname'),
-                   datas.get('email'),datas.get('mobile'),
-                   datas.get('city'),datas.get('ref'),datas.get('display_name'),
-                   datas1.get('plaque'),datas.get('brand'),datas.get('model'),
-                   datas1.get('color'),datas.get('co2')), tempstatus, today = datetime.date.today()"""
-  
-    cur.execute(postgres_insert_query, record_to_insert)
-    conn.commit()
-    count = cur.rowcount
-    print(count, "Record inserted successfully")
+    conn = None
+    try:
+        params = config()
 
-    close_connect(conn, cur)
+        #print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(      user="openpg",
+                                      password="openpgpwd",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="Fleetzeen")
+		
+        #print('Connected to the PostgreSQL database...')
+
+        cur = conn.cursor()  
+        postgres_insert_query= """INSERT INTO fleetzeen_log (user_id, user_client_id, last_name, first_name, 
+                                 email, gsm, adresse, group_client_id,name, plaque, brand, model, color, co2, input_date, status, failure_message) 
+                                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        
+        record_to_insert = (datas.get('user_id'), datas.get('user_client_id'),datas.get('last_name'), datas.get('first_name'),
+                   datas.get('email'),datas.get('gsm'),
+                   datas.get('adresse'),datas.get('group_client_id'),datas.get('name'),
+                   datas1.get('plaque'),datas1.get('brand'),datas1.get('model'),
+                   datas1.get('color'),datas1.get('co2'), date.today(), tempstatus, failure_message)
+
+        #print("record_to_insert is: ", record_to_insert)
+        try:
+            cur.execute(postgres_insert_query, record_to_insert)
+            conn.commit()
+            count = cur.rowcount
+            #print(count, "Record inserted successfully")
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            print("Djo some thing is wrong here")
+        
+        
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    
+    finally:
+        if conn is not None:
+            conn.close()
+            #print('Database connection closed.')
+    
+    
 
 
 
 if __name__ == '__main__':
-
-    a, b=connect()
-    print(a,b)
+   inserting_datas(None, None, "KO")

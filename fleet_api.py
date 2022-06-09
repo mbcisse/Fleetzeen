@@ -72,34 +72,37 @@ def delete_drivers_to_fleet(datas=None):
 
 def new_vehicule_to_fleet(datas):
 
+    #print("new_vehicule_to_fleet: is ", datas)
+
     hed = {'Authorization': 'Bearer ' + authotoken.token}
 
-    datas={   
-              "user_id": "driver_151",
-              "user_client_id": 12123,
-              "last_name": "lopez1",
-              "first_name": "titi1D",
-              "email": "mtiti.lopez@gmail.com",
-              "gsm": "+33940309032",
-              "address": "3 rue des tulipes, paris",
-              "group_client_id": 121231,
-              "name": "group1",
-              "vehicle": {
-                         "plaque": "XDTXAB262",
-                         "brand": "audiF",
-                         "model": "r81",
-                         "color": "noir",
-                         "co2": 12.5
-                                
-                            }
-        }
+    '''datas= {
+    "user_id": "552561111177",
+    "user_client_id": 122221,
+    "last_name": "ABADOU",
+    "first_name": "ABADOU",
+    "email": "sarah94a@hotmail.com",
+    "gsm": "+33607682434",
+    "adresse": "ATHIS MONS",
+    "group_client_id": "9546102",
+    "name": "ABADOU FARID",
+    "vehicle": {
+        "plaque": "ZCG-007-VN1",
+        "brand": "Renault1",
+        "model": "Renault/SCENIC1",
+        "color": "Gris1",
+        "co2": 0.01
+             }
+    }
+    '''
     response = requests.post(endpoints.url_driver, datas, headers=hed)
     
-    #print(response.content)
+    #print("Content really!!!!!!!!: ", response.content)
     if  response.status_code==200:
         return "OK"
     else:
-        return "KO"
+        #print(response.reason)
+        return response.reason
     
 
 def new_familly_to_fleet(datas=None):
@@ -157,7 +160,8 @@ def new_sevice_to_fleet(datas=None):
         print("that's was not the case", response.status_code)
 
 if __name__ == "__main__":
-    #print(get_drivers())
+    print(new_vehicule_to_fleet(datas=None))
     #print(get_vehicules())
     #print(get_company())
-    print((new_sevice_to_fleet()))
+    #print((new_sevice_to_fleet()))
+    pass

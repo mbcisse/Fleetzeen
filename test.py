@@ -3,20 +3,20 @@ import odoo_to_fleetzeen
 import fleet_api 
 import conngresql
 
-'''drivers= [{'id': 17799, 'radio_code': 122221, 'driver_lastname': 'ABADOU', 'driver_firstname': 'FARID', 'email': 
+drivers= [{'id': 337799, 'radio_code': 2288, 'driver_lastname': 'Bassirou', 'driver_firstname': 'Cisse', 'email': 
 'sarah94a@hotmail.com', 'mobile': '+33607682434', 'street': '18 RUE LIONEL DUBRAY', 'zip': '91200', 
-'city': 'ATHIS MONS', 'ref': '9546102', 'display_name': 'ABADOU FARID'}, 
-{'id': 11177, 'radio_code': 111111, 'driver_lastname': 'ABADOU', 'driver_firstname': 'FARID', 'email': 
+'city': 'ATHIS MONS', 'ref': '9546102', 'display_name': 'Bassirou Cisse'}, 
+{'id': 1331177, 'radio_code': 1188, 'driver_lastname': 'Keita', 'driver_firstname': 'Madou', 'email': 
 'sarah94a@hotmail.com', 'mobile': '+33607682434', 'street': '18 RUE LIONEL DUBRAY', 'zip': '91200', 
 'city': 'ATHIS MONS', 'ref': '9546102', 'display_name': 'ABADOU FARID'}]
 
-vehicules=[{'id': 1495, 'name': 'Renault/SCENIC/CG-007-VN1', 'driver_id': [17799, 'LECHABLE1 ERIC1'], 'license_plate': 
-'ZCG-007-VN1', 'brand_id': [521, 'Renault1'], 'model_id': [13111, 'Renault/SCENIC1'], 'color': 'Gris1', 'co2': 0.01}, {'id': 14449, 'name': 'Renault/SCENIC/CG-007-VN', 'driver_id': [11177, 'LECHABLE ERIC'], 
-'license_plate': 'XCG-007-VN', 'brand_id': [52, 'Renault'], 'model_id': [1311, 'Renault/SCENIC'], 'color': 'Gris', 'co2': 0.0}]
-'''
+vehicules=[{'id': 1495, 'name': 'Renault/SCENIC/CG-007-VN1KXX', 'driver_id': [337799, 'Bassirou Cisse'], 'license_plate': 
+'ZCG-007-VN1', 'brand_id': [521, 'Renault1'], 'model_id': [13111, 'Renault/SCENIC1'], 'color': 'Gris1', 'co2': 0.01}, {'id': 14449, 'name': 'Renault/SCENIC/CG-007-VNVV', 'driver_id': [1331177, 'LECHABLE ERIC'], 
+'license_plate': 'BXCG-007-VN', 'brand_id': [52, 'Renault'], 'model_id': [1311, 'Renault/SCENIC'], 'color': 'Gris', 'co2': 0.0}]
 
-drivers= odoo_to_fleetzeen.get_drivers()
-vehicules= odoo_to_fleetzeen.get_vehicules()
+
+#drivers= odoo_to_fleetzeen.get_drivers()
+#vehicules= odoo_to_fleetzeen.get_vehicules()
 
 print("len()drivers  : ", len(drivers))
 print("len()vehicules: ", len(vehicules))
@@ -52,14 +52,14 @@ if __name__ == "__main__":
                                        fleet_datas['first_name']= driver.get('driver_firstname')
                                        fleet_datas['email']           = driver.get('email')
                                        fleet_datas['gsm'] =        driver.get('mobile')
-                                       fleet_datas['adresse']=  driver.get('city')
+                                       fleet_datas['adresse']=  driver.get('street') + ' '+ driver.get('zip') + ' '+ driver.get('city')
                                        fleet_datas['group_client_id']=  int(driver.get('ref'))
                                        #fleet_datas['group_client_id']=  int(driver.get('radio_code'))
                                        fleet_datas['name']=  driver.get('display_name')
                                 
                                        vehicule_datas['plaque']= vehicule.get('license_plate')
                                        vehicule_datas['brand']= vehicule.get('brand_id')[1]
-                                       vehicule_datas['model']= vehicule.get('model_id')[1]
+                                       vehicule_datas['model']= vehicule.get('model_id')[1].split('/')[1]
                                        vehicule_datas['color']= vehicule.get('color')
                                        vehicule_datas['co2']= vehicule.get('co2')
 
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         with open("output.json", "w") as outfile:
                 outfile.write(json.dumps(last_result, indent=4))
         
-        for fleet_data in last_result:
+        '''for fleet_data in last_result:
                 tempstatus="In Progress"
                 vehicule_datas= fleet_data.get("vehicle")
                 conngresql.inserting_datas(fleet_data, vehicule_datas, tempstatus, tempstatus)
@@ -96,4 +96,4 @@ if __name__ == "__main__":
                                 faillure_message= status
                                 conngresql.update_datas(str(fleet_data['user_id']), tempstatus,faillure_message )
                                 #print("KO")                   
-                                             
+                                             '''

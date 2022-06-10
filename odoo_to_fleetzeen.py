@@ -4,19 +4,22 @@ from datetime import timedelta
 import requests
 import odoo_acces
 import xmlrpc.client
+import json
 
 common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(odoo_acces.url))
 uid = common.authenticate(odoo_acces.db, odoo_acces.username, odoo_acces.password, {})
 
 models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_acces.url))
 
-'''today = date.today()
-print("Today is: ", today)
-# Yesterday date
-yesterday = today - timedelta(days = 1)
-print("Yesterday was: ", yesterday)
-yesterday= str(yesterday)
-'''
+
+
+def get_fields_models(model_name):
+
+    fields= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, model_name, 'fields_get', [], {'attributes': ['string', 'help', 'type']})
+    #fields= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, model_name, 'fields_get',[[['is_driver', '=', True]]], {'attributes': ['string', 'help', 'type']})
+    
+    with open(model_name + "_fields" + ".json", "w") as outfile:
+                outfile.write(json.dumps(fields, indent=4))
 
 def get_vehic_drivers():
     
@@ -66,10 +69,11 @@ def get_courses():
     
 
 if __name__ == "__main__":
-    print(get_drivers())
+    #print(get_drivers())
     #print(get_vehicules())
     #print(get_company())
     #print(get_services())
     #get_vehic_drivers()
     #print(get_champs_drivers())
     #print(get_courses())
+    get_fields_models('res.partner')

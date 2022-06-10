@@ -1,6 +1,14 @@
 #!/usr/bin/python
 from configparser import ConfigParser
 
+'''today = date.today()
+print("Today is: ", today)
+# Yesterday date
+yesterday = today - timedelta(days = 1)
+print("Yesterday was: ", yesterday)
+yesterday= str(yesterday)
+'''
+
 
 def config(filename='database.ini', section='postgresql'):
     # create a parser

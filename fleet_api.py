@@ -76,25 +76,25 @@ def new_vehicule_to_fleet(datas):
 
     hed = {'Authorization': 'Bearer ' + authotoken.token}
 
-    '''datas= {
-    "user_id": "552561111177",
-    "user_client_id": 122221,
-    "last_name": "ABADOU",
-    "first_name": "ABADOU",
+    datas= {
+    "user_id": "55255",
+    "user_client_id": 122770,
+    "last_name": "Mohamed",
+    "first_name": "Bassirou",
     "email": "sarah94a@hotmail.com",
     "gsm": "+33607682434",
     "adresse": "ATHIS MONS",
-    "group_client_id": "9546102",
+    "group_client_id": "950002",
     "name": "ABADOU FARID",
     "vehicle": {
-        "plaque": "ZCG-007-VN1",
+        "plaque": "ZCG-007-VN1WWW",
         "brand": "Renault1",
         "model": "Renault/SCENIC1",
         "color": "Gris1",
         "co2": 0.01
              }
     }
-    '''
+    
     response = requests.post(endpoints.url_driver, datas, headers=hed)
     
     #print("Content really!!!!!!!!: ", response.content)

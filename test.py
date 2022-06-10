@@ -80,7 +80,7 @@ if __name__ == "__main__":
         with open("output.json", "w") as outfile:
                 outfile.write(json.dumps(last_result, indent=4))
         
-        '''for fleet_data in last_result:
+        for fleet_data in last_result:
                 tempstatus="In Progress"
                 vehicule_datas= fleet_data.get("vehicle")
                 conngresql.inserting_datas(fleet_data, vehicule_datas, tempstatus, tempstatus)
@@ -96,4 +96,4 @@ if __name__ == "__main__":
                                 faillure_message= status
                                 conngresql.update_datas(str(fleet_data['user_id']), tempstatus,faillure_message )
                                 #print("KO")                   
-                                             '''
+                                          

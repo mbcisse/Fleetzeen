@@ -83,6 +83,9 @@ if __name__ == "__main__":
         for fleet_data in last_result:
                 tempstatus="In Progress"
                 vehicule_datas= fleet_data.get("vehicle")
+      
+                # Perform a select before inserting if the datas exist, juste perform an update, if it does not exist just do the update
+                # select * from fleetzeen_log where driver_id = fleet_data["id"] et faire l'update sur les autres données
                 conngresql.inserting_datas(fleet_data, vehicule_datas, tempstatus, tempstatus)
                 json_object = json.dumps(fleet_data, indent = 4) 
                 if json_object is not None:

@@ -42,7 +42,7 @@ def updated_drivers_to_fleet(datas=None):
     response = requests.put(endpoints.url_driver, datas, headers=hed)
     status= response.status_code
     if status==200:
-        print("Machallah: that's was a sucess", status) 
+        print("Yes: that's was a sucess", status) 
     else:
         print("that's was not the case", status)
 
@@ -64,7 +64,7 @@ def delete_drivers_to_fleet(datas=None):
     response = requests.delete(endpoints.url_driver, datas, headers=hed)
     status= response.status_code
     if status==200:
-        print("Machallah: that's was a sucess", status) 
+        print("Yes: that's was a sucess", status) 
     else:
         print("that's was not the case", status)
 
@@ -77,19 +77,19 @@ def new_vehicule_to_fleet(datas):
     hed = {'Authorization': 'Bearer ' + authotoken.token}
 
     datas= {
-    "user_id": "55255",
-    "user_client_id": 122770,
-    "last_name": "Mohamed",
-    "first_name": "Bassirou",
-    "email": "sarah94a@hotmail.com",
-    "gsm": "+33607682434",
+    "user_id": "10976",
+    "user_client_id": "",
+    "last_name": "Mah",
+    "first_name": "Folomana",
+    "email": "bvmrah1989@hotmail.com",
+    "gsm": "+336077986798",
     "adresse": "ATHIS MONS",
-    "group_client_id": "950002",
-    "name": "ABADOU FARID",
+    "group_client_id": "19904",
+    "name": "Mah Folomana",
     "vehicle": {
-        "plaque": "ZCG-007-VN1WWW",
-        "brand": "Renault1",
-        "model": "Renault/SCENIC1",
+        "plaque": "ZvxCG-007-VNYXDF",
+        "brand": "Renault11",
+        "model": "Renault/RAV41",
         "color": "Gris1",
         "co2": 0.01
              }
@@ -117,7 +117,7 @@ def new_familly_to_fleet(datas=None):
     
     print(response.content)
     if  response.status_code==200:
-        print("Machallah: that's was a sucess", response.status_code) 
+        print("Yes: that's was a sucess", response.status_code) 
     else:
         print("that's was not the case", response.status_code)
 
@@ -136,7 +136,7 @@ def new_company_contract_to_fleet(datas=None):
     
     print(response.content)
     if  response.status_code==200:
-        print("Machallah: that's was a sucess", response.status_code) 
+        print("Yes: that's was a sucess", response.status_code) 
     else:
         print("that's was not the case", response.status_code)
 
@@ -155,7 +155,7 @@ def new_sevice_to_fleet(datas=None):
     
     print(response.content)
     if  response.status_code==200:
-        print("Machallah: that's was a sucess", response.status_code) 
+        print("Yes: that's was a sucess", response.status_code) 
     else:
         print("that's was not the case", response.status_code)
 

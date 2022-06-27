@@ -118,6 +118,9 @@ def getting_drivers_vehicules_datas():
             start_date_vehic_actual, end_date_vehic_actual, lastupdatedate_res_partner, last_update_prec, last_update_actual)
             
             final_result.append(datas_r)
+            
+            # why not do here the insert process to the corresponded database tables with the required datas:  
+            # full_half_flow_VehicDrivers_to_pivotdb to check
         else:
             pass
     return final_result

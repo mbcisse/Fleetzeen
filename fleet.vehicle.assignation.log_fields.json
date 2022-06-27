@@ -1,0 +1,54 @@
+{
+    "vehicle_id": {
+        "type": "many2one",
+        "string": "Vehicle"
+    },
+    "driver_id": {
+        "type": "many2one",
+        "string": "Driver"
+    },
+    "date_start": {
+        "type": "date",
+        "string": "Start Date"
+    },
+    "date_end": {
+        "type": "date",
+        "string": "End Date"
+    },
+    "attachment_number": {
+        "type": "integer",
+        "string": "Number of Attachments"
+    },
+    "is_vehicle_relay": {
+        "type": "boolean",
+        "string": "Is relay"
+    },
+    "id": {
+        "type": "integer",
+        "string": "ID"
+    },
+    "display_name": {
+        "type": "char",
+        "string": "Display Name"
+    },
+    "create_uid": {
+        "type": "many2one",
+        "string": "Created by"
+    },
+    "create_date": {
+        "type": "datetime",
+        "string": "Created on"
+    },
+    "write_uid": {
+        "type": "many2one",
+        "string": "Last Updated by"
+    },
+    "write_date": {
+        "type": "datetime",
+        "string": "Last Updated on"
+    },
+    "__last_update": {
+        "type": "datetime",
+        "string": "Last Modified on"
+    }
+}

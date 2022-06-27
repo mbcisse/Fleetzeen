@@ -54,8 +54,12 @@ def get_vehicules():
     'model_id', 'color', 'co2']})
 
 
+def get_company_test():
+    return models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'res.partner', 'search_read', [], {'fields': ['ref', 'name', 'comment'], 'limit': 1})
+
 def get_company():
     models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'res.partner', 'search_read', [[['is_company', '=', True]]], {'fields': ['ref', 'name', 'comment'], 'limit': 5})
+
 
 def get_subscribers():
     #return models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'res.partner', 'search_read', [[['is_subscriber', '=', True]]], {'fields': ['name', 'parent_id'], 'limit': 5})
@@ -65,7 +69,20 @@ def get_subscribers():
                 outfile.write(json.dumps(result, indent=4))
     # Which on to describe the contracts flux ou bien on utilise res.partner' is_subscriber ou bien fleet.vehicle.log.contract
 
-def get_alpha_taxis_filtered():
+def get_fleet_vehicule_with_ids(ids):
+    
+    res_part= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.assignation.log', 'search_read',
+     [[ ('id', 'in', ids), ]])
+
+
+    pass
+
+def get_res_partner_with_ids(ids):
+    res_part= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'res.partner', 'search',
+     [[('is_company', '=', True), ('id', 'in', ids)]])
+    return res_part
+
+def get_alpha_taxis_with_ids():
 
     datetime.strftime(datetime.now() - timedelta(1), '%Y-%m-%d 00:00:00')
     today = datetime.today()
@@ -73,31 +90,47 @@ def get_alpha_taxis_filtered():
     datef=datetime.today().strftime( '%Y-%m-%d 00:00:00')
     print("This the date:", datef)
     
-    #return models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'res.partner', 'search_read', [[['is_subscriber', '=', True]]], {'fields': ['name', 'parent_id'], 'limit': 5})
-    result1= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'alpha.taxis', 'search_read', [[('radio_contract', 'not like', 'S%'),
-        ('start_date', '<=', today),'|',('end_date', '=', False),('end_date', '>=', today)]], {'fields': ['id']})   
-    
+
     #Get all the alpha_taxis ids code array and the the corresponding drivers based on this ids.
-    '''ids= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'alpha.taxis', 'search', [[('radio_contract', 'not like', 'S%'),
-        ('start_date', '<=', today),'|',('end_date', '=', False),('end_date', '>=', today)]])  '''
+    alpha_taxis_ids= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'alpha.taxis', 'search_read', [[('radio_contract', 'not like', 'S%'),
+        ('start_date', '!=', False),'|',('end_date', '=', False),('end_date', '>=', today)]], {'fields': ['driver_id']})
+    
+    if [12448, 'ADAMS DANIEL'] in get_drivers_ids_1(alpha_taxis_ids):
+        print("YES YES YES")
+    #return get_fleet_vehicle_assignation_log(alpha_taxis_ids)
+    #return get_res_partner_with_ids(get_drivers_ids(alpha_taxis_ids))
 
-    print(len(result1))
-    print((result1))
-    with open("alpha_taxis_datas" + "_fields" + ".json", "w") as outfile:
-                outfile.write(json.dumps(result1, indent=4))
-    #return result1
-    #result= list()
+def get_drivers_ids(ids):
 
-    '''for var in result1:
-        if 'S' not in var['radio_contract'] and var['start_date'] <='2022-06-13 00:00:00'and  (var['end_date'] == False or str(var['end_date']) >= '2022-06-13 00:00:00'):
-            result.append(var)
-        else:
-            pass
+    drivers_list=[]
+    for var in ids:
+        drivers_list.append(var['driver_id'][0])
+    
+    return drivers_list
+    
 
-    print(len(result))
-    with open("alpha_taxis_datas" + "_fields" + ".json", "w") as outfile:
-                outfile.write(json.dumps(result, indent=4))
-'''
+def get_drivers_ids_1(ids):
+
+    drivers_list=[]
+    for var in ids:
+        drivers_list.append(var['driver_id'])
+    
+    return drivers_list
+    
+
+def get_alpha_taxis_datas():
+    today = datetime.today()
+    resul= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'alpha.taxis', 'search_read',  [[('radio_contract', 'not like', 'S%'),
+        ('start_date', '!=', False),'|',('end_date', '=', False),('end_date', '>=', today)]] )
+    with open("alpha_taxis_filtered" + "_datas" + ".json", "w") as outfile:
+                outfile.write(json.dumps(resul, indent=4))
+
+
+def get_fleet_vehicle_assignation_log():
+    
+    resul= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.assignation.log', 'search_read', [] )
+    with open("fleet_vehicle_assignation_log" + "_datas" + ".json", "w") as outfile:
+                outfile.write(json.dumps(resul, indent=4))
 
 def get_contracts():
     return models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.log.contract', 'search_read', [], {'limit': 1})    
@@ -119,12 +152,15 @@ def get_alpha_in_out():
 if __name__ == "__main__":
     #print(get_drivers())
     #print(get_vehicules())
-    #print(get_company())
+    #print(get_fleet_vehicle_assignation_log())
     #print(get_services())
     #get_vehic_drivers()
     #print(get_champs_drivers())
     #print(get_subscribers())
-    #get_fields_models('fleet.vehicle')
+    get_fields_models('fleet.vehicle')
     #get_alpha_taxis()
     #get_alpha_in_out()
-    print(get_alpha_taxis_filtered())
+    #print(get_alpha_taxis_datas())
+    #print(get_fields_models('fleet.vehicle.assignation.log'))
+    #print(get_company_test())
+    #print(get_alpha_taxis_with_ids())

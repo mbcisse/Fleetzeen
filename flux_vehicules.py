@@ -45,7 +45,12 @@ def get_fleet_vehicule_assignation(driver_ids):
 
         print("end_date_vehic_actual: ", end_date_vehic_actual)
 
+
+        print("datetime.today(): ", datetime.today())
+
         if end_date_vehic_actual is False or datetime.strptime(end_date_vehic_actual, "%Y-%m-%d") > datetime.today() :
+            print ("end_date_vehic_actual: ", datetime.strptime(end_date_vehic_actual, "%Y-%m-%d"))
+
             return id_vehicule_actual
         
         else:

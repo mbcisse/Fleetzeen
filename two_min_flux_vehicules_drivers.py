@@ -30,9 +30,16 @@ def get_alpha_taxis_with_ids():
 
 
 def get_fleet_vehicule_assignation(driver_ids):
+
+    db_last_update= half_flow_odoo_topivotdb.getting_db_last_update_from_pivotdb(driver_ids)
     
+    if db_last_update=="last_update_vehicule_actual":
+        db_last_update= half_flow_odoo_topivotdb.getting_actual_db_last_update_from_pivotdb(driver_ids)
+    else:
+       db_last_update= half_flow_odoo_topivotdb.getting_prec_db_last_update_from_pivotdb(driver_ids)
+
     var= driver_ids
-    count= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.assignation.log', 'search_count', [[['driver_id','=', var]]] )
+    count= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.assignation.log', 'search_count', [[('driver_id','=', var), ('__last_update', '>', db_last_update)]])
     
     if count==1:
         resul= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.assignation.log', 
@@ -58,29 +65,27 @@ def get_fleet_vehicule_assignation(driver_ids):
         end_date_vehic_prec= resul[1]['date_end']
         last_update_prec= resul[1]['__last_update']
 
-            
+          
         return id_vehicule_prec[0], id_vehicule_actual[0], start_date_vehic_prec, start_date_vehic_actual, end_date_vehic_prec, end_date_vehic_actual, last_update_actual,last_update_prec
     
     else:
         return False
     
 
-def get_alpha_taxis_datas(driver_ids):
-
-    alpha_taxis_datas= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'alpha.taxis', 'search_read',
-     [[['driver_id','=', driver_ids]]], {'fields': ['driver_id', 'radio_code', 'start_date','end_date', 'status' ]})
-
-    return alpha_taxis_datas
-
 def get_res_partner_with_ids(driver_id):
-    
-   # drivers_ids, drivers_1, alpha_taxis_ids_datas = get_alpha_taxis_with_ids()
 
-    drivers_datas= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'res.partner', 'search_read',
-     [[('is_driver', '=', True), ('id', '=', driver_id)]], {'fields': ['radio_code', 'alpha_taxis_ids', 'driver_lastname', 'driver_firstname',
-      'email','mobile', 'street','zip', 'city', 'ref', 'display_name', 'x_studio_x_lastupdatedate_flow']})
+    db_x_studio_x_lastupdatedate_flow= half_flow_odoo_topivotdb.getting_db_x_studio_x_lastupdatedate__flow_from_pivotdb(driver_id)
     
-    return drivers_datas
+    if db_x_studio_x_lastupdatedate_flow !='false':
+        drivers_datas= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'res.partner', 'search_read',
+        [[('is_driver', '=', True), ('id', '=', driver_id), ('x_studio_x_lastupdatedate_flow', '!=', 'False'), 
+        ('x_studio_x_lastupdatedate_flow', '>', db_x_studio_x_lastupdatedate_flow)]], 
+        {'fields': ['radio_code', 'alpha_taxis_ids', 'driver_lastname', 'driver_firstname',
+        'email','mobile', 'street','zip', 'city', 'ref', 'display_name', 'x_studio_x_lastupdatedate_flow']})
+        
+        return drivers_datas
+    else:
+        return []
 
 def getting_drivers_vehicules_datas():
 
@@ -90,24 +95,29 @@ def getting_drivers_vehicules_datas():
     
     final_result=[]
     
-    half_flow_odoo_topivotdb.purges_pivotdb_purge("drivers_vehicules")
+    #half_flow_odoo_topivotdb.purges_pivotdb_purge("drivers_vehicules")
 
     for driver_id in drivers_ids:
         
-        datas_res_partner = get_res_partner_with_ids(driver_id)[0]
-        datas_alpha_taxis = get_alpha_taxis_datas(driver_id)[0]
-        datas_fleet_vehicule_assign= get_fleet_vehicule_assignation(driver_id)
+        if len(get_res_partner_with_ids(driver_id)) > 1:
+            
+            datas_res_partner = get_res_partner_with_ids(driver_id)[0]
+            # Perfom a new update here with the datas of the new divers from get_res_partner_with_ids(call in update function)
+            # datas_alpha_taxis = get_alpha_taxis_datas(driver_id)[0], we don't need any information into alpha_taxis_datas
+            
+            datas_fleet_vehicule_assign= get_fleet_vehicule_assignation(driver_id)
+            # Perfom a new update here with the datas of the new divers from get_fleet_vehicule_assignation(call in update function)
         
         if datas_fleet_vehicule_assign is not False:
             id= datas_res_partner['id']
             radio_code= datas_res_partner['radio_code']
             alpha_taxis_ids= datas_res_partner['alpha_taxis_ids']
             lastupdatedate_res_partner= datas_res_partner['x_studio_x_lastupdatedate_flow']
-            start_date_alpha_taxis= datas_alpha_taxis['start_date']
-            end_date_alpha_taxis= datas_alpha_taxis['end_date']
-
             
-            status= datas_alpha_taxis['status']
+            #start_date_alpha_taxis= datas_alpha_taxis['start_date']
+            #end_date_alpha_taxis= datas_alpha_taxis['end_date']
+            #status= datas_alpha_taxis['status']
+            
             driver_last_name= datas_res_partner['driver_lastname']
             driver_first_name= datas_res_partner['driver_firstname']
             email= datas_res_partner['email']
@@ -116,21 +126,14 @@ def getting_drivers_vehicules_datas():
             group_client_id= datas_res_partner['ref']
             display_name= datas_res_partner['display_name']
             id_vehicule_prec, id_vehicule_actual, start_date_vehic_prec, start_date_vehic_actual, end_date_vehic_prec, end_date_vehic_actual, last_update_vehicule_prec, last_update_vehicule_actual=datas_fleet_vehicule_assign
-                 
+                  
+            #half_flow_odoo_topivotdb.full_half_flow_VehicDrivers_to_pivotdb= This will be an update wtith the required datas and then send this datas to fleet
 
-            '''
-            datas_r=(id, radio_code,alpha_taxis_ids, start_date_alpha_taxis, end_date_alpha_taxis, status,driver_last_name, 
-            driver_first_name, email, mobile, adresse, group_client_id, display_name, id_vehicule_prec, start_date_vehic_prec, end_date_vehic_prec, id_vehicule_actual, 
-            start_date_vehic_actual, end_date_vehic_actual, lastUpdatedate_res_partner, lastUpdate_vehicule_prec, lastUpdate_vehicule_actual)
-            final_result.append(datas_r)
-            
-            '''
-            
             half_flow_odoo_topivotdb.full_half_flow_VehicDrivers_to_pivotdb( 
-              id, radio_code, alpha_taxis_ids, start_date_alpha_taxis, end_date_alpha_taxis, status, driver_last_name, 
-              driver_first_name, email, mobile, adresse, group_client_id, display_name, id_vehicule_prec, start_date_vehic_prec, 
-              end_date_vehic_prec, id_vehicule_actual, start_date_vehic_actual, end_date_vehic_actual, lastupdatedate_res_partner,
-              last_update_vehicule_prec, last_update_vehicule_actual)
+              id, radio_code, alpha_taxis_ids,driver_last_name,  driver_first_name, email, mobile, adresse, 
+              group_client_id, display_name, id_vehicule_prec, start_date_vehic_prec, end_date_vehic_prec, id_vehicule_actual, 
+              start_date_vehic_actual, end_date_vehic_actual, lastupdatedate_res_partner, last_update_vehicule_prec, 
+              last_update_vehicule_actual)
 
 
             # why not do here the insert process to the corresponded database tables with the required datas:  

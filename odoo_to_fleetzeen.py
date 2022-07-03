@@ -157,7 +157,7 @@ if __name__ == "__main__":
     #get_vehic_drivers()
     #print(get_champs_drivers())
     #print(get_subscribers())
-    get_fields_models('fleet.vehicle')
+    get_fields_models('alpha.taxis')
     #get_alpha_taxis()
     #get_alpha_in_out()
     #print(get_alpha_taxis_datas())

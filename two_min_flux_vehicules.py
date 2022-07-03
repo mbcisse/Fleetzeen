@@ -29,8 +29,10 @@ def get_alpha_taxis_with_ids():
 
 def get_fleet_vehicule_assignation(driver_ids):
     
+    db_last_update= half_flow_odoo_topivotdb.getting_db_vehicule_last_update_from_pivotdb(driver_ids)
+    
     var= driver_ids
-    count= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.assignation.log', 'search_count', [[['driver_id','=', var]]] )
+    count= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.assignation.log', 'search_count', [[('driver_id','=', var), ('__last_update', '>', db_last_update)]] )
     
     if count==1:
         resul= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'fleet.vehicle.assignation.log', 
@@ -72,7 +74,7 @@ def getting_vehicules_datas():
     print("Len: ", len(drivers_ids))
     
     final_result=[]
-    half_flow_odoo_topivotdb.purges_pivotdb_purge("vehicules")
+    
 
     for driver_id in drivers_ids:
         id_vehic= get_fleet_vehicule_assignation(driver_id)
@@ -81,6 +83,9 @@ def getting_vehicules_datas():
             temp_result= getting_vehicules_aux(id_vehic[0])
             vehicules_datas=  temp_result[0]
             print("Eso es mis datas: ", vehicules_datas)
+
+            #Perfom a new update here with the datas of the new vehicule from get_res_partner_with_ids(call in update function)
+            #full_half_flow_Vehicules_to_pivotdb will be an update
 
             half_flow_odoo_topivotdb.full_half_flow_Vehicules_to_pivotdb(vehicules_datas)
             final_result.append(vehicules_datas)

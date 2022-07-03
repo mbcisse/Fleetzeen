@@ -6,7 +6,7 @@ def new_drivers_to_fleet(datas):
 
     hed = {'Authorization': 'Bearer ' + authotoken.token}
 
-    datas={
+    '''datass={
             "user_id": "driver_333458",
             "user_client_id": 21212358,
             "last_name": "Cisse",
@@ -17,12 +17,17 @@ def new_drivers_to_fleet(datas):
             "group_client_id": 121221,
             "name": "group1"
         }
+    '''
+
     response = requests.post(endpoints.url_driver, datas, headers=hed)
     status= response.status_code
+    
     if status==200:
-        print("Machallah: that's was a sucess", status) 
+        return "OK"
+    
     else:
-        print("that's was not the case", status)
+        return response.reason
+
 
 def updated_drivers_to_fleet(datas=None):
 
@@ -41,10 +46,13 @@ def updated_drivers_to_fleet(datas=None):
         }
     response = requests.put(endpoints.url_driver, datas, headers=hed)
     status= response.status_code
+    
     if status==200:
-        print("Yes: that's was a sucess", status) 
+        return "OK"
+ 
     else:
-        print("that's was not the case", status)
+        return response.reason
+
 
 def delete_drivers_to_fleet(datas=None):
 
@@ -76,7 +84,7 @@ def new_vehicule_to_fleet(datas):
 
     hed = {'Authorization': 'Bearer ' + authotoken.token}
 
-    datas= {
+    '''datas= {
     "user_id": "10976",
     "user_client_id": "",
     "last_name": "Mah",
@@ -95,54 +103,60 @@ def new_vehicule_to_fleet(datas):
              }
     }
     
+    '''
+   
     response = requests.post(endpoints.url_driver, datas, headers=hed)
-    
-    #print("Content really!!!!!!!!: ", response.content)
+  
     if  response.status_code==200:
         return "OK"
     else:
-        #print(response.reason)
         return response.reason
     
 
-def new_familly_to_fleet(datas=None):
+def new_familly_to_fleet(datas):
     
     hed = {'Authorization': 'Bearer ' + authotoken.token}
-    datas={
+    
+    '''datas={
             "company_id": "test_1",
             "client_id": 62377,
             "name": "I2C"
         }
+    '''
     response = requests.post(endpoints.url_company, datas, headers=hed)
-    
-    print(response.content)
-    if  response.status_code==200:
-        print("Yes: that's was a sucess", response.status_code) 
+    status= response.status_code
+    if status==200:
+        return "OK"
     else:
-        print("that's was not the case", response.status_code)
-
-
-def new_company_contract_to_fleet(datas=None):
+        return response.reason
+    
+    
+def new_company_contract_to_fleet(datas):
     
     hed = {'Authorization': 'Bearer ' + authotoken.token}
-    datas= {
+    
+    '''datas= {
             "companycontract_id": "testabonne_2",
             "client_id": 6237001,
             "name": "Abo1",
             "company": "test_1",
             "auth_account": 'true'
          }
-    response = requests.post(endpoints.url_abonne, datas, headers=hed)
+    '''
     
-    print(response.content)
-    if  response.status_code==200:
-        print("Yes: that's was a sucess", response.status_code) 
+    response = requests.post(endpoints.url_abonne, datas, headers=hed)
+    status= response.status_code
+    
+    if status==200:
+        return "OK"
     else:
-        print("that's was not the case", response.status_code)
-
-def new_sevice_to_fleet(datas=None):
+        return response.reason
+    
+def new_sevice_to_fleet(datas):
     
     hed = {'Authorization': 'Bearer ' + authotoken.token}
+    
+    '''
     datas= {
             "companyservice_id": "testservice_2",
             "client_id": 20012,
@@ -151,13 +165,15 @@ def new_sevice_to_fleet(datas=None):
             "comment_to_call_taker": "attention au numéro fixe",
             "comment_to_driver": "bagage à main"
             }
+    '''
+
     response = requests.post(endpoints.url_service, datas, headers=hed)
     
-    print(response.content)
-    if  response.status_code==200:
-        print("Yes: that's was a sucess", response.status_code) 
+    status= response.status_code
+    if status==200:
+        return "OK"
     else:
-        print("that's was not the case", response.status_code)
+        return response.reason
 
 if __name__ == "__main__":
     print(new_vehicule_to_fleet(datas=None))

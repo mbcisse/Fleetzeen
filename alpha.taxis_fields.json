@@ -1,0 +1,58 @@
+{
+    "status": {
+        "type": "selection",
+        "string": "Status"
+    },
+    "start_date": {
+        "type": "datetime",
+        "string": "Start"
+    },
+    "end_date": {
+        "type": "datetime",
+        "string": "End"
+    },
+    "radio_contract": {
+        "type": "char",
+        "string": "Contract Number"
+    },
+    "radio_code": {
+        "type": "char",
+        "string": "Radio Code"
+    },
+    "driver_id": {
+        "type": "many2one",
+        "string": "Driver"
+    },
+    "order_id": {
+        "type": "many2one",
+        "string": "Order"
+    },
+    "id": {
+        "type": "integer",
+        "string": "ID"
+    },
+    "display_name": {
+        "type": "char",
+        "string": "Display Name"
+    },
+    "create_uid": {
+        "type": "many2one",
+        "string": "Created by"
+    },
+    "create_date": {
+        "type": "datetime",
+        "string": "Created on"
+    },
+    "write_uid": {
+        "type": "many2one",
+        "string": "Last Updated by"
+    },
+    "write_date": {
+        "type": "datetime",
+        "string": "Last Updated on"
+    },
+    "__last_update": {
+        "type": "datetime",
+        "string": "Last Modified on"
+    }
+}

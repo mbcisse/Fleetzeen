@@ -11,6 +11,8 @@ uid = common.authenticate(odoo_acces.db, odoo_acces.username, odoo_acces.passwor
 
 models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_acces.url))
 
+def bassandbass():
+    return "C'est lui le plus grand!!!!!!"
 
 def get_drivers_ids(ids):
     drivers_list=[]

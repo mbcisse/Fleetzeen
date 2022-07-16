@@ -18,15 +18,26 @@ def get_drivers_ids(ids):
         drivers_list.append(var['driver_id'][0])
     return drivers_list
 
+def get_only_end_dates(alpha_taxis_ids_end):
+    return alpha_taxis_ids_end[0]['end_date']
+     
+    
 
 def get_alpha_taxis_with_ids():
     today = datetime.today() 
     alpha_taxis_ids= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'alpha.taxis', 'search_read',
      [[('radio_contract', 'not like', 'S%'), ('start_date', '!=', False),'|',('end_date', '=', False),
-     ('end_date', '>=', today)]], {'fields': ['driver_id', 'start_date','end_date', 'status'  ]})
+     ('end_date', '>=', today)]], {'fields': ['driver_id', 'start_date','end_date', 'status']})
 
     return get_drivers_ids(alpha_taxis_ids)
 
+def getting_alpha_end_dates_actual(driver_ids):
+    alpha_taxis_ids_end= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'alpha.taxis', 'search_read',
+     [[['driver_id','=', driver_ids]]], {'fields': ['end_date']})
+    
+    return get_only_end_dates(alpha_taxis_ids_end)
+
+#Add here the start date and endate parameters from alpha.taxis and return or get only the good actual  
 def get_fleet_vehicule_assignation(driver_ids):
     
     var= driver_ids
@@ -44,12 +55,16 @@ def get_fleet_vehicule_assignation(driver_ids):
         end_date_vehic_actual= resul[0]['date_end']
         id_vehicule_prec= resul[1]['vehicle_id']
 
-        print("end_date_vehic_actual: ", end_date_vehic_actual)
-
 
         print("datetime.today(): ", datetime.today())
 
-        if end_date_vehic_actual is False or datetime.strptime(end_date_vehic_actual, "%Y-%m-%d") > datetime.today() :
+        #Check here if the enddate and start from alpha.taxis
+
+        end_date_vehic_actual= getting_alpha_end_dates_actual(driver_ids)
+        print("end_date_vehic_actual: ", end_date_vehic_actual)
+
+
+        if end_date_vehic_actual is False or datetime.strptime(end_date_vehic_actual, "%Y-%m-%d %H:%M:%S") > datetime.today() :
             #print ("end_date_vehic_actual: ", datetime.strptime(end_date_vehic_actual, "%Y-%m-%d"))
 
             return id_vehicule_actual

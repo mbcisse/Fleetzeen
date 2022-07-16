@@ -1,3 +1,5 @@
+import code
+from unicodedata import name
 import requests
 import endpoints
 import authotoken
@@ -26,7 +28,13 @@ def new_drivers_to_fleet(datas):
         return "OK"
     
     else:
-        return response.reason
+        resp=response.json()
+        message=  resp["message"] 
+        name= resp["name"]
+        code= resp["code"]
+        context= resp["context"]
+        reason=  str(name) + ": "  + str(message) + "  "  + str(code)
+        return reason
 
 
 def updated_drivers_to_fleet(datas=None):
@@ -110,7 +118,14 @@ def new_vehicule_to_fleet(datas):
     if  response.status_code==200:
         return "OK"
     else:
-        return response.reason
+        resp=response.json()
+        message=  resp["message"] 
+        name= resp["name"]
+        code= resp["code"]
+        context= resp["context"]
+        reason=  str(name) + ": "  + str(message) + "  "  + str(code)
+        return reason
+        
     
 
 def new_familly_to_fleet(datas):
@@ -128,7 +143,13 @@ def new_familly_to_fleet(datas):
     if status==200:
         return "OK"
     else:
-        return response.reason
+        resp=response.json()
+        message=  resp["message"] 
+        name= resp["name"]
+        code= resp["code"]
+        context= resp["context"]
+        reason=  str(name) + ": "  + str(message) + "  "  + str(code)
+        return reason
     
     
 def new_company_contract_to_fleet(datas):
@@ -136,21 +157,28 @@ def new_company_contract_to_fleet(datas):
     hed = {'Authorization': 'Bearer ' + authotoken.token}
     
     '''datas= {
-            "companycontract_id": "testabonne_2",
-            "client_id": 6237001,
-            "name": "Abo1",
-            "company": "test_1",
+            "companycontract_id": "280410",
+            "client_id": "2691",
+            "name": "MME DU BOISROUVRAY",
+            "company": "249640",
             "auth_account": 'true'
          }
     '''
     
     response = requests.post(endpoints.url_abonne, datas, headers=hed)
+
     status= response.status_code
     
     if status==200:
         return "OK"
     else:
-        return response.reason
+        resp=response.json()
+        message=  resp["message"] 
+        name= resp["name"]
+        code= resp["code"]
+        context= resp["context"]
+        reason=  str(name) + ": "  + str(message) + "  "  + str(code)
+        return reason
     
 def new_sevice_to_fleet(datas):
     
@@ -173,11 +201,18 @@ def new_sevice_to_fleet(datas):
     if status==200:
         return "OK"
     else:
-        return response.reason
+        resp=response.json()
+        message=  resp["message"] 
+        name= resp["name"]
+        code= resp["code"]
+        context= resp["context"]
+        reason=  str(name) + ": "  + str(message) + "  "  + str(code)+ "  "  + str(context)
+        return reason
 
 if __name__ == "__main__":
-    print(new_vehicule_to_fleet(datas=None))
+    #print(new_vehicule_to_fleet(datas=None))
     #print(get_vehicules())
     #print(get_company())
     #print((new_sevice_to_fleet()))
+    print(new_company_contract_to_fleet(datas=None))
     pass

@@ -68,7 +68,7 @@ def get_fleet_vehicule_assignation(driver_ids):
 def get_alpha_taxis_datas(driver_ids):
 
     alpha_taxis_datas= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'alpha.taxis', 'search_read',
-     [[['driver_id','=', driver_ids]]], {'fields': ['driver_id', 'radio_code', 'start_date','end_date', 'status' ]})
+     [[['driver_id','=', driver_ids]]], {'fields': ['driver_id', 'radio_code', 'start_date','end_date', 'status', '__last_update']})
 
     return alpha_taxis_datas
 
@@ -105,7 +105,7 @@ def getting_drivers_vehicules_datas():
             lastupdatedate_res_partner= datas_res_partner['x_studio_x_lastupdatedate_flow']
             start_date_alpha_taxis= datas_alpha_taxis['start_date']
             end_date_alpha_taxis= datas_alpha_taxis['end_date']
-
+            last_update_alpha= datas_alpha_taxis['__last_update']
             
             status= datas_alpha_taxis['status']
             driver_last_name= datas_res_partner['driver_lastname']
@@ -130,7 +130,7 @@ def getting_drivers_vehicules_datas():
               id, radio_code, alpha_taxis_ids, start_date_alpha_taxis, end_date_alpha_taxis, status, driver_last_name, 
               driver_first_name, email, mobile, adresse, group_client_id, display_name, id_vehicule_prec, start_date_vehic_prec, 
               end_date_vehic_prec, id_vehicule_actual, start_date_vehic_actual, end_date_vehic_actual, lastupdatedate_res_partner,
-              last_update_vehicule_prec, last_update_vehicule_actual)
+              last_update_vehicule_prec, last_update_vehicule_actual,last_update_alpha)
 
 
             # why not do here the insert process to the corresponded database tables with the required datas:  

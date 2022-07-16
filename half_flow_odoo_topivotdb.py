@@ -206,10 +206,13 @@ def full_half_flow_services_to_pivotdb(id, subscriber_code_str, name, company_id
         if parent_id== False:
             parent_id=[1, "No parent_id"]
         
+        if company_id==False:
+            company_id=[1, "No company_id"]
+        
 
         adress= street +" " + " "+ city + " " +zip+ " "+country_id[1]
         
-        record_to_insert = (str(id), str(subscriber_code_str), str(name), str(company_id), str(parent_id[1]), str(subscriber_in), str(subscriber_out), 
+        record_to_insert = (str(id), str(subscriber_code_str), str(name), str(company_id[0]), str(parent_id[0]), str(subscriber_in), str(subscriber_out), 
         str(mobile),str(email) ,str(adress), str(comment_for_operator), str(comment_for_driver),str(cmp_odoo_to_pivotdb_input_date), str(cmp_odoo_to_pivotdb_lastupdate), str(cmp_odoo_to_pivotdb_sync_error_message),str(cmp_odoo_to_pivotdb_sync_status), str(cmp_pivotdb_to_fleet_sync_date), str(cmp_pivotdb_to_fleet_sync_status), str(cmp_pivotdb_to_fleet_sync_error_message))
 
         print("record_to_insert is: ", record_to_insert)
@@ -395,7 +398,7 @@ def full_half_flow_VehicDrivers_to_pivotdb(id, radio_code, alpha_taxis_ids, star
                                             status, driver_last_name, driver_first_name, email, mobile, adresse, group_client_id, 
                                             display_name, id_vehicule_prec, start_date_vehic_prec, end_date_vehic_prec, 
                                             id_vehicule_actual, start_date_vehic_actual, end_date_vehic_actual, 
-                                            lastupdatedate_res_partner, last_update_vehicule_prec, last_update_vehicule_actual):
+                                            lastupdatedate_res_partner, last_update_vehicule_prec, last_update_vehicule_actual, last_update_alpha):
     
     '''
     print("Entrando en las base de datos:", id, radio_code, alpha_taxis_ids, start_date_alpha_taxis, end_date_alpha_taxis, 
@@ -425,8 +428,8 @@ def full_half_flow_VehicDrivers_to_pivotdb(id, radio_code, alpha_taxis_ids, star
             id_vehicule_precedent, start_vehic_fleet_prec, end_vehic_fleet_prec, id_vehiclule_actuel, start_vehic_fleet_actuel,
             end_vehic_fleet_actuel, odoo_to_pivotdb_input_date, odoo_to_pivotdb_last_update, pivotdb_to_fleet_sync_date, 
             pivotdb_to_fleet_sync_status, pivotdb_to_fleet_sync_error_message, odoo_to_pivotdb_sync_status, 
-            odoo_to_pivotdb_sync_error_message, last_update_res_partner, last_update_vehicule_prec, last_update_vehicule_actual)
-            VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+            odoo_to_pivotdb_sync_error_message, last_update_res_partner, last_update_vehicule_prec, last_update_vehicule_actual,last_update_alpha)
+            VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         
         now =  datetime.now()
         odoo_to_pivotdb_input_date=  now.strftime("%Y-%m-%d_%H:%M:%S")
@@ -442,10 +445,9 @@ def full_half_flow_VehicDrivers_to_pivotdb(id, radio_code, alpha_taxis_ids, star
               driver_first_name, email, mobile, adresse, group_client_id, display_name, id_vehicule_prec, start_date_vehic_prec, 
               end_date_vehic_prec, id_vehicule_actual, start_date_vehic_actual, end_date_vehic_actual, odoo_to_pivotdb_input_date, 
               odoo_to_pivotdb_last_update, pivotdb_to_fleet_sync_date, pivotdb_to_fleet_sync_status, pivotdb_to_fleet_sync_error_message1, 
-              odoo_to_pivotdb_sync_status, odoo_to_pivotdb_sync_error_message1, lastupdatedate_res_partner, last_update_vehicule_prec, last_update_vehicule_actual)
+              odoo_to_pivotdb_sync_status, odoo_to_pivotdb_sync_error_message1, lastupdatedate_res_partner, last_update_vehicule_prec, last_update_vehicule_actual, last_update_alpha)
 
-        #print("record_to_insert is: ", record_to_insert)
-        
+        #print("record_to_insert is: ", record_to_insert)       
         try:
             cur.execute(postgres_insert_query, record_to_insert)
             conn.commit()
@@ -454,12 +456,8 @@ def full_half_flow_VehicDrivers_to_pivotdb(id, radio_code, alpha_taxis_ids, star
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
             print("Djo some thing is wrong here")
-        
-        
-    
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-    
     finally:
         if conn is not None:
             conn.close()
@@ -560,7 +558,7 @@ def getting_db_x_studio_x_lastupdatedate__flow_from_pivotdb(driver_id):
             
         try:
             print("db_last_update_res")
-            cur.execute(postgres_select_query, (driver_id,))
+            cur.execute(postgres_select_query, (int(driver_id),))
             db_last_update_res= cur.fetchall()
             #print(db_last_update_res)
             for db_last in db_last_update_res:
@@ -600,7 +598,7 @@ def getting_actual_db_last_update_from_pivotdb(driver_id):
             
         try:
             print("db_last_update_res")
-            cur.execute(postgres_select_query, (driver_id,))
+            cur.execute(postgres_select_query, (int(driver_id),))
             db_last_update_res= cur.fetchall()
             #print(db_last_update_res)
             for db_last in db_last_update_res:
@@ -620,6 +618,7 @@ def getting_actual_db_last_update_from_pivotdb(driver_id):
     finally:
         if conn is not None:
             conn.close()
+
 def getting_prec_db_last_update_from_pivotdb(driver_id):
     conn = None
     try:
@@ -635,7 +634,7 @@ def getting_prec_db_last_update_from_pivotdb(driver_id):
 
         try:
             print("db_last_update_res")
-            cur.execute(postgres_select_query, (driver_id,))
+            cur.execute(postgres_select_query, (int(driver_id),))
             db_last_update_res= cur.fetchall()
             #print(db_last_update_res)
             for db_last in db_last_update_res:
@@ -674,7 +673,7 @@ def getting_db_last_update_from_pivotdb(driver_id):
                                   FROM drivers_vehicules WHERE dh_id = %s"""           
         try:
             print("db_last_update_res")
-            cur.execute(postgres_select_query, (driver_id,))
+            cur.execute(postgres_select_query, (int(driver_id),))
             db_last_update_res= cur.fetchall()
             #print(db_last_update_res)
             for db_last in db_last_update_res:
@@ -691,8 +690,225 @@ def getting_db_last_update_from_pivotdb(driver_id):
         if conn is not None:
             conn.close()
 
+def two_min_flux_vehicules_drivers_datas_update(id, radio_code, alpha_taxis_ids,driver_last_name,  driver_first_name, email, mobile, adresse, group_client_id, display_name, 
+                                                id_vehicule_prec, start_date_vehic_prec, end_date_vehic_prec, id_vehicule_actual, start_date_vehic_actual, end_date_vehic_actual, 
+                                                lastupdatedate_res_partner, last_update_vehicule_prec, last_update_vehicule_actual):
+    conn = None
+    try:
+        #print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(      user="openpg",
+                                      password="openpgpwd",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="Fleetzeen")
+        cur = conn.cursor()
+
+        sql_update_query = """Update drivers_vehicules set radio_code = %s, alpha_taxis_ids =  %s, driver_last_name  = %s, driver_first_name= %s, email=%s, 
+                               mobile=%s, adresse= %s, ident_adherent=%s, display_name=%s, id_vehicule_precedent=%s, start_vehic_fleet_prec=%s, end_vehic_fleet_prec=%s,
+                               id_vehicule_actual=%s, start_vehic_fleet_actuel=%s, end_vehic_fleet_actuel=%s, odoo_to_pivotdb_input_date=%s, odoo_to_pivotdb_last_update=%s,
+                               odoo_to_pivotdb_sync_status=%s, odoo_to_pivotdb_sync_error_message=%s,lastupdatedate_res_partner=%s, last_update_vehicule_prec=%s, 
+                               last_update_vehicule_actual=s% where dh_id = %s """
+        
+        odoo_to_pivotdb_input_date=""
+        odoo_to_pivotdb_last_update=""
+        odoo_to_pivotdb_sync_status="OK"
+        odoo_to_pivotdb_sync_error_message="No error"
+
+        try:
+            cur.execute(sql_update_query, (str(radio_code), str(alpha_taxis_ids), str(driver_last_name), str(driver_first_name), str(email), str(mobile),str(adresse),
+                                          (str(group_client_id), str(display_name), str(id_vehicule_prec), str(start_date_vehic_prec), str(end_date_vehic_prec), str(id_vehicule_actual),
+                                          str(start_date_vehic_actual), str(end_date_vehic_actual), odoo_to_pivotdb_input_date, odoo_to_pivotdb_last_update, 
+                                          odoo_to_pivotdb_sync_status, odoo_to_pivotdb_sync_error_message, str(lastupdatedate_res_partner), str(last_update_vehicule_prec), 
+                                          str(last_update_vehicule_actual), str(id))))
+            conn.commit()
+
+            #get this new data and sent to fleet and process the code of return    
+        except (Exception, psycopg2.DatabaseError) as error:
+            print("Taliko:  Error, DJO IL YA ERROR: ", error)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    
+    finally:
+        if conn is not None:
+            conn.close()
+            #print('Database connection closed.')
+
+
+def get_alpha_taxis_with_ids_from_pivotdb():
+    conn = None
+    try:
+      #print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(      user="openpg",
+                                      password="openpgpwd",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="Fleetzeen")
+		
+        #print('Connected to the PostgreSQL database...')
+        cur = conn.cursor()  
+        postgres_select_query= "select dh_id from drivers_vehicules"        
+        try:
+            print("db_last_update_drivers_vehicules")
+            cur.execute(postgres_select_query)
+            get_alpha_taxis_with_ids= cur.fetchall()
+            #print(get_alpha_taxis_with_ids)
+            return get_alpha_taxis_with_ids
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            print("Djo some thing is wrong here")     
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    
+    finally:
+        if conn is not None:
+            conn.close()
+def getting_alpha_taxis_db_last_update_from_pivotdb(driver_ids):
+    conn = None
+    try:
+      #print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(      user="openpg",
+                                      password="openpgpwd",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="Fleetzeen")
+		
+        #print('Connected to the PostgreSQL database...')
+        cur = conn.cursor()  
+        postgres_select_query= "select last_update_alpha from drivers_vehicules where dh_id = %s"        
+        try:
+            #print("db_last_update_drivers_vehicules")
+            cur.execute(postgres_select_query, (int(driver_ids),))
+            db_last_update_res= cur.fetchall()
+            #print(db_last_update_res)
+            for db_last in db_last_update_res:
+                return db_last[0]
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            print("Djo some thing is wrong here")     
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    
+    finally:
+        if conn is not None:
+            conn.close()
+
+
+def two_min_flux_drivers_res_partner_datas_update(id, radio_code, alpha_taxis_ids,driver_last_name,  driver_first_name, email, mobile, adresse, group_client_id, display_name, lastupdatedate_res_partner):
+    conn = None
+    try:
+        #print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(      user="openpg",
+                                      password="openpgpwd",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="Fleetzeen")
+        cur = conn.cursor()
+
+        sql_update_query = """Update drivers_vehicules set radio_code = %s, alpha_taxis_ids =  %s, driver_last_name  = %s, driver_first_name= %s, email=%s, 
+                               mobile=%s, adresse= %s, ident_adherent=%s, display_name=%s, lastupdatedate_res_partner=%s where dh_id = %s """
+        
+        now =  datetime.now()
+        odoo_to_pivotdb_input_date=  now.strftime("%Y-%m-%d_%H:%M:%S")
+        odoo_to_pivotdb_last_update= now.strftime("%Y-%m-%d_%H:%M:%S")
+        odoo_to_pivotdb_sync_status="OK"
+        odoo_to_pivotdb_sync_error_message="No error"
+
+        try:
+            cur.execute(sql_update_query, (str(radio_code), str(alpha_taxis_ids), str(driver_last_name), str(driver_first_name), str(email), str(mobile),str(adresse),
+                                          str(group_client_id), str(display_name), odoo_to_pivotdb_input_date, odoo_to_pivotdb_last_update, 
+                                          odoo_to_pivotdb_sync_status, odoo_to_pivotdb_sync_error_message, str(lastupdatedate_res_partner), str(id)))
+            conn.commit()
+
+            #get this new data and sent to fleet and process the code of return    
+        except (Exception, psycopg2.DatabaseError) as error:
+            print("Taliko:  Error, DJO IL YA ERROR: ", error)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    
+    finally:
+        if conn is not None:
+            conn.close()
+            #print('Database connection closed.')
+
+def two_min_flux_drivers_alpha_taxis_datas_update(driver_id, start_date_alpha_taxis, end_date_alpha_taxis, status, last_update_alpha):
+    conn = None
+    try:
+        #print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(      user="openpg",
+                                      password="openpgpwd",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="Fleetzeen")
+        cur = conn.cursor()
+
+        sql_update_query = """Update drivers_vehicules set start_alpha_code_radio = %s, end_alpha_code_radio =  %s, 
+                              status_alpha_taxis = %s, odoo_to_pivotdb_input_date= %s, odoo_to_pivotdb_last_update=%s,
+                              odoo_to_pivotdb_sync_status=%s, odoo_to_pivotdb_sync_error_message=%s, last_update_alpha= %s 
+                              where dh_id = %s """       
+        now =  datetime.now()
+        odoo_to_pivotdb_input_date=  now.strftime("%Y-%m-%d_%H:%M:%S")
+        odoo_to_pivotdb_last_update= now.strftime("%Y-%m-%d_%H:%M:%S")
+        odoo_to_pivotdb_sync_status="OK"
+        odoo_to_pivotdb_sync_error_message="No error"
+
+        try:
+            cur.execute(sql_update_query, (str(start_date_alpha_taxis), str(end_date_alpha_taxis), str(status), str(odoo_to_pivotdb_input_date),
+            str(odoo_to_pivotdb_last_update), str(odoo_to_pivotdb_sync_status), str(odoo_to_pivotdb_sync_error_message),str(last_update_alpha)
+            , str(driver_id)))
+            conn.commit()
+            #get this new data and sent to fleet and process the code of return    
+        except (Exception, psycopg2.DatabaseError) as error:
+            print("Taliko:  Error, DJO IL YA ERROR: ", error)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    
+    finally:
+        if conn is not None:
+            conn.close()
+            #print('Database connection closed.')
+
+def two_min_flux_vehicules_fleet_vehicule_assignation_drivers_datas_update(driver_id, id_vehicule_prec, start_date_vehic_prec, end_date_vehic_prec, id_vehicule_actual, start_date_vehic_actual, end_date_vehic_actual, last_update_vehicule_prec, last_update_vehicule_actual):
+    conn = None
+    try:
+        #print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(      user="openpg",
+                                      password="openpgpwd",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="Fleetzeen")
+        cur = conn.cursor()
+
+        sql_update_query = """Update drivers_vehicules set id_vehicule_precedent = %s, start_vehic_fleet_prec =  %s, end_vehic_fleet_prec = %s,
+                             id_vehiclule_actuel= %s, start_vehic_fleet_actuel= %s, end_vehic_fleet_actuel=%s, odoo_to_pivotdb_input_date=%s,
+                             odoo_to_pivotdb_last_update=%s,odoo_to_pivotdb_sync_status=%s, odoo_to_pivotdb_sync_error_message=%s, 
+                             last_update_vehicule_prec=%s, last_update_vehicule_actual=%s where dh_id = %s """       
+        
+        now =  datetime.now()
+        odoo_to_pivotdb_input_date=  now.strftime("%Y-%m-%d_%H:%M:%S")
+        odoo_to_pivotdb_last_update= now.strftime("%Y-%m-%d_%H:%M:%S")
+        odoo_to_pivotdb_sync_status="OK"
+        odoo_to_pivotdb_sync_error_message="No error"
+
+        try:
+            cur.execute(sql_update_query, (str(id_vehicule_prec), str(start_date_vehic_prec), str(end_date_vehic_prec), 
+            str(id_vehicule_actual), str(start_date_vehic_actual), str(end_date_vehic_actual), 
+            str(odoo_to_pivotdb_input_date), str(odoo_to_pivotdb_last_update), str(odoo_to_pivotdb_sync_status), 
+            str(odoo_to_pivotdb_sync_error_message),str(last_update_vehicule_prec), str(last_update_vehicule_actual), str(driver_id)))
+            conn.commit()
+            #get this new data and sent to fleet and process the code of return    
+        except (Exception, psycopg2.DatabaseError) as error:
+            print("Taliko:  Error, DJO IL YA ERROR: ", error)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    
+    finally:
+        if conn is not None:
+            conn.close()
+            #print('Database connection closed.')
+
+
 
 
 if __name__ == '__main__':
-   print(getting_db_last_update_from_pivotdb(11968))
+   print(get_alpha_taxis_with_ids_from_pivotdb())
  

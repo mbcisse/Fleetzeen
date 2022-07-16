@@ -117,6 +117,14 @@ def get_drivers_ids_1(ids):
     
     return drivers_list
     
+def get_services_aux():
+
+    service= models.execute_kw(odoo_acces.db, uid, odoo_acces.password, 'res.partner', 'search_read',
+     [[('company_group_id', '!=', False), ('is_subscriber', '=', True), ('parent_id', '!=', False)]], 
+     {'fields':['subscriber_code_str', 'name', 'company_group_id', 'parent_id', 'subscriber_in', 'subscriber_out', 'mobile',
+     'email', 'street', 'city', 'zip', 'country_id', 'comment_for_operator','comment_for_driver']})
+    with open("service" + "_datas" + ".json", "w") as outfile:
+                outfile.write(json.dumps(service, indent=4))
 
 def get_alpha_taxis_datas():
     today = datetime.today()
@@ -157,10 +165,11 @@ if __name__ == "__main__":
     #get_vehic_drivers()
     #print(get_champs_drivers())
     #print(get_subscribers())
-    get_fields_models('alpha.taxis')
+    #get_fields_models('alpha.taxis')
     #get_alpha_taxis()
     #get_alpha_in_out()
     #print(get_alpha_taxis_datas())
     #print(get_fields_models('fleet.vehicle.assignation.log'))
     #print(get_company_test())
     #print(get_alpha_taxis_with_ids())
+    get_services_aux()
